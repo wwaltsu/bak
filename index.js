@@ -1,13 +1,23 @@
-const { read } = require('feed-reader')
-
 const http = require('http')
-const ruuat = read('https://www.foodandco.fi/modules/MenuRss/MenuRss/CurrentWeek?costNumber=3060&language=fi').then(result => console.log(result))
+const ruuat = 'https://www.foodandco.fi/modules/MenuRss/MenuRss/CurrentWeek?costNumber=3060&language=fi' 
 
-const app = http.createServer((request, response) => {
-    response.writeHead(200, { 'Content-Type': 'application/json' })
-    response.end(JSON.stringify(ruuat))
-  })
+const { parse } = require('rss-to-json');
+// async await
+(async () => {
 
-const PORT = 3001
-app.listen(PORT)
-console.log(`Server running on port ${PORT}`)
+    var rss = await parse('https://www.foodandco.fi/modules/MenuRss/MenuRss/CurrentWeek?costNumber=3060&language=fi');
+
+    console.log(JSON.stringify(rss, null, 3));
+
+    const app = http.createServer((request, response) => {
+      response.writeHead(200, { 'Content-Type': 'application/json' })
+      response.end(JSON.stringify(rss))
+    }) 
+    
+    const PORT = 3001
+    app.listen(PORT)
+    console.log(`Server running on port ${PORT}`)
+    
+})();
+
+
